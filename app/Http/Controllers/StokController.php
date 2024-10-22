@@ -8,7 +8,7 @@ use App\Models\StokModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
 class StokController extends Controller
 {
@@ -47,25 +47,18 @@ class StokController extends Controller
         if ($request->user_id) {
             $stok->where('user_id', $request->user_id);
         }
-        
+
         return DataTables::of($stok)
-            // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
-            ->addIndexColumn()
+            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex) 
             ->addColumn('aksi', function ($stok) { // menambahkan kolom aksi 
                 $btn = '<a href="' . url('/stok/' . $stok->stok_id) . '" class="btn btn-info btn-sm">Detail</a> ';
-                $btn .= '<a href="' . url('/stok/' . $stok->stok_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
-                $btn .= '<form class="d-inline-block" method="POST" action="' .
-                    url('/stok/' . $stok->stok_id) . '">'
-                    . csrf_field() . method_field('DELETE') .
-                    '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm
-                    (\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>';
                 $btn .= '<button onclick="modalAction(\'' . url('/stok/' . $stok->stok_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\'' . url('/stok/' . $stok->stok_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
                 return $btn;
             })
-            ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
             ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html 
             ->make(true);
+
         // return DataTables::of($stok)
         //     // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
         //     ->addIndexColumn()
@@ -81,6 +74,7 @@ class StokController extends Controller
         //     })
         //     ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
         //     ->make(true);
+
     }
 
     // Menampilkan halaman form tambah stok 
@@ -106,11 +100,13 @@ class StokController extends Controller
         $supplier = SupplierModel::select('supplier_id', 'supplier_nama')->get();
         $barang = BarangModel::select('barang_id', 'barang_nama')->get();
         $user = UserModel::select('user_id', 'username')->get();
+
         return view('stok.create_ajax')
             ->with('supplier', $supplier)
             ->with('barang', $barang)
             ->with('user', $user);
     }
+
     // Menyimpan data stok baru
     public function store(Request $request)
     {
@@ -123,12 +119,11 @@ class StokController extends Controller
             'stok_jumlah'    => 'required|integer' //nama harus diisi, berupa string, dan maksimal 100 karakter
         ]);
         StokModel::create([
-            'supplier_id'   => $request-> supplier_id,
-            'barang_id'     => $request-> barang_id,
-            'user_id'       => $request-> user_id,
-            'stok_tanggal'  => $request-> stok_tanggal,
-            'stok_jumlah'   => $request-> stok_jumlah
-        
+            'supplier_id'   => $request->supplier_id,
+            'barang_id'     => $request->barang_id,
+            'user_id'       => $request->user_id,
+            'stok_tanggal'  => $request->stok_tanggal,
+            'stok_jumlah'   => $request->stok_jumlah
         ]);
         return redirect('/stok')->with('success', 'Data stok berhasil disimpan');
     }
@@ -161,6 +156,7 @@ class StokController extends Controller
         }
         redirect('/');
     }
+
     // Menampilkan detail stok
     public function show(string $id)
     {
@@ -189,9 +185,9 @@ class StokController extends Controller
         ];
 
         $activeMenu = 'stok'; // set menu yang sedang aktif
-        return view('stok.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'stok'=> $stok, 'supplier' => $supplier, 'barang' => $barang, 'user' => $user, 'activeMenu' => $activeMenu]);
         return view('stok.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'stok' => $stok, 'supplier' => $supplier, 'barang' => $barang, 'user' => $user, 'activeMenu' => $activeMenu]);
     }
+
     public function edit_ajax(string $id)
     {
         $stok = StokModel::find($id);
@@ -208,10 +204,9 @@ class StokController extends Controller
             'supplier_id'   => 'required|integer',
             'barang_id'     => 'required|integer',
             'user_id'       => 'required|integer',
-            'stok_tanggal'  => 'required|date',
-            'stok_jumlah'   => 'required|integer'
-        ]); // Closing bracket and semicolon were missing here
-    
+            'stok_tanggal'  => 'required|date', //nama harus diisi, berupa string, dan maksimal 100 karakter
+            'stok_jumlah'   => 'required|integer' //nama harus diisi, berupa string, dan maksimal 100 karakter
+        ]);
         StokModel::find($id)->update([
             'supplier_id'   => $request->supplier_id,
             'barang_id'     => $request->barang_id,
@@ -219,10 +214,8 @@ class StokController extends Controller
             'stok_tanggal'  => $request->stok_tanggal,
             'stok_jumlah'   => $request->stok_jumlah
         ]);
-    
         return redirect('/stok')->with("success", "Data stok berhasil diubah");
     }
-    
 
     public function update_ajax(Request $request, $id)
     {
@@ -260,11 +253,13 @@ class StokController extends Controller
         }
         return redirect('/');
     }
+
     public function confirm_ajax(string $id)
     {
         $stok = StokModel::find($id);
         return view('stok.confirm_ajax', ['stok' => $stok]);
     }
+
     public function delete_ajax(Request $request, $id)
     {
         // cek apakah request dari ajax
@@ -285,6 +280,7 @@ class StokController extends Controller
         }
         return redirect('/');
     }
+
     // Menghapus data stok 
     public function destroy(string $id)
     {

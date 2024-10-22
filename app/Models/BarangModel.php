@@ -16,6 +16,6 @@ class BarangModel extends Model
     }
     public function barang():HasMany
     {
-        return $this->hasMany(StockModel::class, 'stock_id', 'stock_id');
+        return $this->hasMany(BarangModel::class, 'barang_id', 'barang_id');
     }
 }

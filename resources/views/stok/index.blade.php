@@ -31,13 +31,6 @@
                             </select>
                             <small class="form-text text-muted">supplier stok</small>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group row">
-                        <label class="col-1 control-label col-form-label">Filter:</label>
                         <div class="col-3">
                             <select class="form-control" id="barang_id" name="barang_id" required>
                                 <option value="">- Semua -</option>
@@ -47,18 +40,10 @@
                             </select>
                             <small class="form-text text-muted">barang stok</small>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group row">
-                        <label class="col-1 control-label col-form-label">Filter:</label>
                         <div class="col-3">
                             <select class="form-control" id="user_id" name="user_id" required>
                                 <option value="">- Semua -</option>
                                 @foreach ($user as $item)
-                                    <option value="{{ $item->user_id }}">{{ $item->username}}</option>
                                     <option value="{{ $item->user_id }}">{{ $item->username }}</option>
                                 @endforeach
                             </select>
@@ -94,7 +79,6 @@
         }
         var datastok;
         $(document).ready(function() {
-            var datastok = $('#table_stok').DataTable({
             datastok = $('#table_stok').DataTable({
                 // serverSide: true, jika ingin menggunakan server side processing
                 serverSide: true,
@@ -102,7 +86,6 @@
                     "url": "{{ url('stok/list') }}",
                     "dataType": "json",
                     "type": "POST",
-                    "data": function (d) {
                     "data": function(d) {
                         d.supplier_id = $('#supplier_id').val();
                         d.barang_id = $('#barang_id').val();
@@ -150,15 +133,13 @@
                     searchable: false
                 }]
             });
-            $('#supplier_id').on('change',function(){
+
             $('#supplier_id').on('change', function() {
                 datastok.ajax.reload();
             });
-            $('#barang_id').on('change',function(){
             $('#barang_id').on('change', function() {
                 datastok.ajax.reload();
             });
-            $('#user_id').on('change',function(){
             $('#user_id').on('change', function() {
                 datastok.ajax.reload();
             });

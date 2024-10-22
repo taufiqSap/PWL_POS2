@@ -60,7 +60,6 @@ data-keyboard="false" data-width="75%" aria-hidden="true"></div>
         }
         var datasupplier;
         $(document).ready(function() {
-            var datasupplier = $('#table_supplier').DataTable({
             datasupplier = $('#table_supplier').DataTable({
                 // serverSide: true, jika ingin menggunakan server side processing
                 serverSide: true,
@@ -102,7 +101,7 @@ data-keyboard="false" data-width="75%" aria-hidden="true"></div>
                     orderable: false,
                     searchable: false
                 }]
-            });
+            })
             // $('#supplier_id').on('change',function(){
             //     datasupplier.ajax.reload();
             // });

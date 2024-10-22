@@ -57,9 +57,9 @@ data-keyboard="false" data-width="75%" aria-hidden="true"></div>
                 $('#myModal').modal('show');
             });
         }
+
         var dataLevel;
         $(document).ready(function() {
-            var dataLevel = $('#table_level').DataTable({
             dataLevel = $('#table_level').DataTable({
                 // serverSide: true, jika ingin menggunakan server side processing
                 serverSide: true,
@@ -97,6 +97,7 @@ data-keyboard="false" data-width="75%" aria-hidden="true"></div>
                     searchable: false
                 }]
             });
+
             // $('#level_id').on('change',function(){
             //     dataLevel.ajax.reload();
             // });

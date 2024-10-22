@@ -59,7 +59,6 @@ function modalAction(url = '') {
         }
         var dataKategori;
         $(document).ready(function() {
-            var dataKategori = $('#table_kategori').DataTable({
             dataKategori = $('#table_kategori').DataTable({
                 // serverSide: true, jika ingin menggunakan server side processing
                 serverSide: true,
@@ -96,7 +95,7 @@ function modalAction(url = '') {
                     orderable: false,
                     searchable: false
                 }]
-            });
+            })
             // $('#kategori_id').on('change',function(){
             //     dataKategori.ajax.reload();
             // });
