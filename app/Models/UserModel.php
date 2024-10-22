@@ -4,36 +4,42 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo; // Import the correct BelongsTo class
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;  //implementasi class authenticatable
 
-class UserModel extends Model
+class UserModel extends Authenticatable
 {
     use HasFactory;
 
-    protected $table = 'm_user'; // Defining the table name
-    protected $primaryKey = 'user_id'; // Defining the primary key
+    protected $table = 'm_user'; //Mendefinisikan nama tabel yang digunakan oleh model ini
+    protected $primaryKey = 'user_id'; //Mendefinisikan primary key dari tabel yang digunakan
 
-    protected $fillable = ['level_id', 'username', 'nama', 'password'];
+    protected $fillable = ['level_id', 'username', 'nama', 'password', 'created_at', 'updated_at'];
 
-    protected $hidden =['password'];
-    protected $casts = ['password' => 'hashed'];
+    protected $hidden = ['password']; // jangan ditampilkan saat select
 
+    protected $casts = ['password' => 'hashed']; // casting password agar otomatis dihash 
 
-
-    // Defining the relationship with LevelModel
-    public function level(): BelongsTo
-    {
+    // relasi ke tabel level
+    public function level(): BelongsTo {
         return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
     }
-    
-    public function getRoleName(): stream_set_blocking
-    {
+
+    // mendapatkan nama role
+
+    public function getRoleName(): String {
         return $this->level->level_nama;
     }
 
-    public function hasRole($role): bool
-    {
+    // cek apakah user memiliki role tertentu
+
+    public function hasRole($role): bool {
         return $this->level->level_kode == $role;
+    }
+
+    // mendapatkan kode role
+
+    public function getRole() {
+        return $this->level->level_kode;
     }
 }
