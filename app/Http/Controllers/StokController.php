@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\BarangModel;
 use App\Models\SupplierModel;
-use App\Models\StockModel;
+use App\Models\StokModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
 
 class StokController extends Controller
 {
@@ -32,7 +32,7 @@ class StokController extends Controller
     // Ambil data stok dalam bentuk json untuk datatables
     public function list(Request $request)
     {
-        $stok = StockModel::select('stok_id', 'supplier_id', 'barang_id', 'user_id', 'stok_tanggal', 'stok_jumlah')
+        $stok = StokModel::select('stok_id', 'supplier_id', 'barang_id', 'user_id', 'stok_tanggal', 'stok_jumlah')
             ->with('supplier')
             ->with('barang')
             ->with('user');
@@ -51,8 +51,6 @@ class StokController extends Controller
         return DataTables::of($stok)
             // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
             ->addIndexColumn()
-            ->addColumn('aksi', function ($stok) { // menambahkan kolom aksi
-            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex) 
             ->addColumn('aksi', function ($stok) { // menambahkan kolom aksi 
                 $btn = '<a href="' . url('/stok/' . $stok->stok_id) . '" class="btn btn-info btn-sm">Detail</a> ';
                 $btn .= '<a href="' . url('/stok/' . $stok->stok_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
@@ -124,17 +122,13 @@ class StokController extends Controller
             'stok_tanggal'  => 'required|date', //nama harus diisi, berupa string, dan maksimal 100 karakter
             'stok_jumlah'    => 'required|integer' //nama harus diisi, berupa string, dan maksimal 100 karakter
         ]);
-        StockModel::create([
+        StokModel::create([
             'supplier_id'   => $request-> supplier_id,
             'barang_id'     => $request-> barang_id,
             'user_id'       => $request-> user_id,
             'stok_tanggal'  => $request-> stok_tanggal,
             'stok_jumlah'   => $request-> stok_jumlah
-            'supplier_id'   => $request->supplier_id,
-            'barang_id'     => $request->barang_id,
-            'user_id'       => $request->user_id,
-            'stok_tanggal'  => $request->stok_tanggal,
-            'stok_jumlah'   => $request->stok_jumlah
+        
         ]);
         return redirect('/stok')->with('success', 'Data stok berhasil disimpan');
     }
@@ -159,7 +153,7 @@ class StokController extends Controller
                     'msgField' => $validator->errors() // menunjukkan field mana yang error
                 ]);
             }
-            StockModel::create($request->all());
+            StokModel::create($request->all());
             return response()->json([
                 'status'    => true,
                 'message'   => 'Data user berhasil disimpan'
@@ -170,7 +164,7 @@ class StokController extends Controller
     // Menampilkan detail stok
     public function show(string $id)
     {
-        $stok = StockModel::with('supplier')->find($id);
+        $stok = StokModel::with('supplier')->find($id);
         $breadcrumb = (object) ['title' => 'Detail stok', 'list' => ['Home', 'stok', 'Detail']];
         $page = (object) ['title' => 'Detail stok'];
         $activeMenu = 'stok'; // set menu yang sedang aktif
@@ -180,7 +174,7 @@ class StokController extends Controller
     // Menampilkan halaman fore edit stok 
     public function edit(string $id)
     {
-        $stok = StockModel::find($id);
+        $stok = StokModel::find($id);
         $supplier = SupplierModel::all(); // ambil data supplier untuk filter supplier
         $barang = BarangModel::all(); // ambil data supplier untuk filter supplier
         $user = UserModel::all(); // ambil data supplier untuk filter supplier
@@ -200,7 +194,7 @@ class StokController extends Controller
     }
     public function edit_ajax(string $id)
     {
-        $stok = StockModel::find($id);
+        $stok = StokModel::find($id);
         $supplier = SupplierModel::select('supplier_id', 'supplier_nama')->get();
         $barang = BarangModel::select('barang_id', 'barang_nama')->get();
         $user = UserModel::select('user_id', 'username')->get();
@@ -214,24 +208,21 @@ class StokController extends Controller
             'supplier_id'   => 'required|integer',
             'barang_id'     => 'required|integer',
             'user_id'       => 'required|integer',
-            'stok_tanggal'  => 'required|date', //nama harus diisi, berupa string, dan maksimal 100 karakter
-            'stok_jumlah'    => 'required|integer' //nama harus diisi, berupa string, dan maksimal 100 karakter
-            'stok_jumlah'   => 'required|integer' //nama harus diisi, berupa string, dan maksimal 100 karakter
-        ]);
-        StockModel::find($id)->update([
-            'supplier_id'   => $request-> supplier_id,
-            'barang_id'     => $request-> barang_id,
-            'user_id'       => $request-> user_id,
-            'stok_tanggal'  => $request-> stok_tanggal,
-            'stok_jumlah'   => $request-> stok_jumlah
+            'stok_tanggal'  => 'required|date',
+            'stok_jumlah'   => 'required|integer'
+        ]); // Closing bracket and semicolon were missing here
+    
+        StokModel::find($id)->update([
             'supplier_id'   => $request->supplier_id,
             'barang_id'     => $request->barang_id,
             'user_id'       => $request->user_id,
             'stok_tanggal'  => $request->stok_tanggal,
             'stok_jumlah'   => $request->stok_jumlah
         ]);
+    
         return redirect('/stok')->with("success", "Data stok berhasil diubah");
     }
+    
 
     public function update_ajax(Request $request, $id)
     {
@@ -253,7 +244,7 @@ class StokController extends Controller
                     'msgField' => $validator->errors() // menunjukkan field mana yang error
                 ]);
             }
-            $check = StockModel::find($id);
+            $check = StokModel::find($id);
             if ($check) {
                 $check->update($request->all());
                 return response()->json([
@@ -271,14 +262,14 @@ class StokController extends Controller
     }
     public function confirm_ajax(string $id)
     {
-        $stok = StockModel::find($id);
+        $stok = StokModel::find($id);
         return view('stok.confirm_ajax', ['stok' => $stok]);
     }
     public function delete_ajax(Request $request, $id)
     {
         // cek apakah request dari ajax
         if ($request->ajax() || $request->wantsJson()) {
-            $stok = StockModel::find($id);
+            $stok = StokModel::find($id);
             if ($stok) {
                 $stok->delete();
                 return response()->json([
@@ -297,13 +288,13 @@ class StokController extends Controller
     // Menghapus data stok 
     public function destroy(string $id)
     {
-        $check = StockModel::find($id);
+        $check = StokModel::find($id);
         if (!$check) {      // untuk mengecek apakah data stok dengan id yang dimaksud ada atau tidak
             return redirect('/stok')->with('error', 'Data stok tidak ditemukan');
         }
 
         try {
-            StockModel::destroy($id); // Hapus data supplier
+            StokModel::destroy($id); // Hapus data supplier
             return redirect('/stok')->with('success', 'Data stokstok berhasil dihapus');
         } catch (\Illuminate\Database\QueryException $e) {
             // Jika terjadi error ketika menghapus data, redirect kembali ke halaman dengan membawa pesan error

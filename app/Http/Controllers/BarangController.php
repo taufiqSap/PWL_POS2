@@ -37,25 +37,19 @@ class BarangController extends Controller
         }
         
         return DataTables::of($barang)
-            // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
-            ->addIndexColumn()
-            ->addColumn('aksi', function ($barang) { // menambahkan kolom aksi
-            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex) 
-            ->addColumn('aksi', function ($barang) { // menambahkan kolom aksi 
-                $btn = '<a href="' . url('/barang/' . $barang->barang_id) . '" class="btn btn-info btn-sm">Detail</a> ';
-                $btn .= '<a href="' . url('/barang/' . $barang->barang_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
-                $btn .= '<form class="d-inline-block" method="POST" action="' .
-                    url('/barang/' . $barang->barang_id) . '">'
-                    . csrf_field() . method_field('DELETE') .
-                    '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm
-                    (\'Apakah Anda yakit menghapus data ini?\');">Hapus</button></form>';
-                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
-                $btn .= '<button onclick="modalAction(\'' . url('/barang/' . $barang->barang_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
-                return $btn;
-            })
-            ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
-            ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html 
-            ->make(true);
+    ->addIndexColumn()
+    ->addColumn('aksi', function ($barang) { 
+        $btn = '<a href="' . url('/barang/' . $barang->barang_id) . '" class="btn btn-info btn-sm">Detail</a> ';
+        $btn .= '<a href="' . url('/barang/' . $barang->barang_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
+        $btn .= '<form class="d-inline-block" method="POST" action="' .
+            url('/barang/' . $barang->barang_id) . '">'
+            . csrf_field() . method_field('DELETE') .
+            '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
+        return $btn;
+    })
+    ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html
+    ->make(true);
+
         // // filter data barang berdasarkan kategori_id
         // if ($request->kategori_id) {
         //     $barang->where('kategori_id', $request->kategori_id);
@@ -107,17 +101,13 @@ class BarangController extends Controller
             'harga_jual'    => 'required|integer', //nama harus diisi, berupa string, dan maksimal 100 karakter
         ]);
         BarangModel::create([
-            'kategori_id'   => $request-> kategori_id,
-            'barang_kode'   => $request-> barang_kode,
-            'barang_nama'   => $request-> barang_nama,
-            'harga_beli'    => $request-> harga_beli,
-            'harga_jual'    => $request-> harga_jual
             'kategori_id'   => $request->kategori_id,
             'barang_kode'   => $request->barang_kode,
             'barang_nama'   => $request->barang_nama,
             'harga_beli'    => $request->harga_beli,
             'harga_jual'    => $request->harga_jual
         ]);
+        
         return redirect('/barang')->with('success', 'Data Barang berhasil disimpan');
     }
 
@@ -168,11 +158,7 @@ class BarangController extends Controller
             'barang_nama'   => $request-> barang_nama,
             'harga_beli'    => $request-> harga_beli,
             'harga_jual'    => $request-> harga_jual
-            'kategori_id'   => $request->kategori_id,
-            'barang_kode'   => $request->barang_kode,
-            'barang_nama'   => $request->barang_nama,
-            'harga_beli'    => $request->harga_beli,
-            'harga_jual'    => $request->harga_jual
+           
         ]);
         return redirect('/barang')->with("success", "Data Barang berhasil diubah");
     }

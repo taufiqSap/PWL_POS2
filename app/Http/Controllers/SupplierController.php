@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\SupplierModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\DataTables;
+
 
 class SupplierController extends Controller
 {
@@ -61,8 +62,6 @@ class SupplierController extends Controller
         return DataTables::of($supplier)
             // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
             ->addIndexColumn()
-            ->addColumn('aksi', function ($supplier) { // menambahkan kolom aksi
-            ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex) 
             ->addColumn('aksi', function ($supplier) { // menambahkan kolom aksi 
                 $btn = '<a href="' . url('/supplier/' . $supplier->supplier_id) . '" class="btn btn-info btn-sm">Detail</a> ';
                 $btn .= '<a href="' . url('/supplier/' . $supplier->supplier_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
@@ -103,15 +102,11 @@ class SupplierController extends Controller
             'supplier_kode'=> 'required|string|min:3|max:10|unique:m_supplier,supplier_kode',// supplier_kode harus diisi, berupa string, minimal 3 karakter, maks 10 dan bernilai unik
             'supplier_nama'=> 'required|string|max:100', //nama harus diisi, berupa string, dan maksimal 100 karakter
             'supplier_alamat'=> 'required|string|max:100' //nama harus diisi, berupa string, dan maksimal 100 karakter
-            'supplier_kode' => 'required|string|min:3|max:10|unique:m_supplier,supplier_kode', // supplier_kode harus diisi, berupa string, minimal 3 karakter, maks 10 dan bernilai unik
-            'supplier_nama' => 'required|string|max:100', //nama harus diisi, berupa string, dan maksimal 100 karakter
-            'supplier_alamat' => 'required|string|max:100' //nama harus diisi, berupa string, dan maksimal 100 karakter
         ]);
         SupplierModel::create([
             'supplier_kode'  => $request->supplier_kode,
             'supplier_nama'  => $request->supplier_nama,
             'supplier_alamat'=> $request->supplier_alamat
-            'supplier_alamat' => $request->supplier_alamat
         ]);
         return redirect('/supplier')->with('success', 'Data supplier berhasil disimpan');
     }
@@ -153,15 +148,11 @@ class SupplierController extends Controller
             'supplier_kode'=> 'required|string|min:3|max:10|unique:m_supplier,supplier_kode,'. $id . ',supplier_id',
             'supplier_nama'=> 'required|string|max:100', // nama harus diisi, berupa string, dan maksimal 100 karakter
             'supplier_alamat'=> 'required|string|max:100' //nama harus diisi, berupa string, dan maksimal 100 karakter
-            'supplier_kode' => 'required|string|min:3|max:10|unique:m_supplier,supplier_kode,' . $id . ',supplier_id',
-            'supplier_nama' => 'required|string|max:100', // nama harus diisi, berupa string, dan maksimal 100 karakter
-            'supplier_alamat' => 'required|string|max:100' //nama harus diisi, berupa string, dan maksimal 100 karakter
         ]);
         SupplierModel::find($id)->update([
             'supplier_kode'  => $request->supplier_kode,
             'supplier_nama'  => $request->supplier_nama,
             'supplier_alamat'=> $request->supplier_alamat
-            'supplier_alamat' => $request->supplier_alamat
         ]);
         return redirect('/supplier')->with("success", "Data supplier berhasil diubah");
     }

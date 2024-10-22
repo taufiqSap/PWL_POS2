@@ -64,7 +64,6 @@
                     <p>Transaksi Penjualan</p>
                 </a>
             </li>
-
             <!-- Menambahkan Menu Logout -->
             <li class="nav-item">
                 <a href="{{ url('logout') }}" class="nav-link"
